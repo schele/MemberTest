@@ -1,16 +1,18 @@
-﻿@using MembersTestUmbraco16.Business.Providers
+﻿@using MembersTestUmbraco16.Business.Extensions
+@using MembersTestUmbraco16.Business.Providers
 @using Umbraco.Cms.Core.PublishedCache
 @using Umbraco.Cms.Core.Security
 @using Umbraco.Cms.Core.Services;
 @using Umbraco.Cms.Web.Website.Controllers;
 @using Umbraco.Cms.Web.Website.Models;
+@using Umbraco.Cms.Web.Common;
 
 @* @inherits UmbracoViewPage<MemberProfileViewModel> *@
 
 @inject MemberModelBuilderFactory memberModelBuilderFactory
 @inject ITwoFactorLoginService twoFactorLoginService
-@inject IMemberService memberService
-@inject IPublishedMemberCache memberCache
+@inject IMemberService _memberService
+@inject UmbracoHelper _umbraco
 
 @{
     Layout = "root.cshtml";
@@ -20,8 +22,8 @@
     var profileModel = await memberModelBuilderFactory
         .CreateProfileModel()
         .BuildForCurrentMemberAsync();
-
-    var publishedMember = memberCache.Get(memberService.GetByUsername(profileModel?.UserName)) as Member;
+    var member = _memberService.GetByUsername(profileModel.UserName);
+    var imageUrl = member?.ImageUrl("image", _umbraco);
     var providerNames = twoFactorLoginService.GetAllProviderNames();
 
     if (providerNames.Any())
@@ -39,7 +41,7 @@
                         <div class="col-md-4 mb-4">
                             <div class="card shadow-sm text-center">
                                 <div class="card-body">
-                                    <img src="@publishedMember?.Image?.Url()"
+                                    <img src="@imageUrl"
                                          alt="Profile picture"
                                          class="rounded-circle mb-3"
                                          style="width: 120px; height: 120px; object-fit: cover;">
