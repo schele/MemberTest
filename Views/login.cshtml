@@ -1,0 +1,33 @@
+﻿@using MembersTestUmbraco16.Controllers.SurfaceControllers
+@using MembersTestUmbraco16.Models
+@using MembersTestUmbraco16.Models.ViewModels
+@using Umbraco.Cms.Web.Common.PublishedModels
+
+@inherits UmbracoViewPage<LoginViewModel>
+
+@{
+	Layout = "root.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <h1 class="mb-4 text-center">Login</h1>
+
+            @using (Html.BeginUmbracoForm<MemberLoginController>(nameof(MemberLoginController.MemberLogin)))
+            {
+                <div class="mb-3">
+                    <label for="Username" class="form-label">Username</label>
+                    <input type="text" class="form-control" id="Username" name="Username" placeholder="Enter your username" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="Password" class="form-label">Password</label>
+                    <input type="password" class="form-control" id="Password" name="Password" placeholder="Enter your password" required />
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mt-3">Logga in</button>
+            }
+        </div>
+    </div>
+</div>

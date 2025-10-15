@@ -1,0 +1,205 @@
+﻿@using MembersTestUmbraco16.Business.Providers
+@using Umbraco.Cms.Core.Services;
+@using Umbraco.Cms.Web.Website.Controllers;
+@using Umbraco.Cms.Web.Website.Models;
+
+@inject MemberModelBuilderFactory memberModelBuilderFactory
+@inject ITwoFactorLoginService twoFactorLoginService
+
+@{
+    Layout = "root.cshtml";
+}
+
+@{
+    var profileModel = await memberModelBuilderFactory
+        .CreateProfileModel()
+        .BuildForCurrentMemberAsync();
+
+    var providerNames = twoFactorLoginService.GetAllProviderNames();
+    if (providerNames.Any())
+    {
+        <div asp-validation-summary="All" class="text-danger"></div>
+        foreach (var providerName in providerNames)
+        {
+            var setupData = await twoFactorLoginService.GetSetupInfoAsync(profileModel.Key, providerName);
+
+            if (setupData is null)
+            {
+                <div class="container my-5">
+                    <div class="row">
+                        <!-- Sidebar -->
+                        <div class="col-md-4 mb-4">
+                            <div class="card shadow-sm text-center">
+                                <div class="card-body">
+                                    <img src="https://via.placeholder.com/120"
+                                         alt="Profile picture"
+                                         class="rounded-circle mb-3"
+                                         style="width: 120px; height: 120px; object-fit: cover;">
+                                    <h4 class="mb-0">@profileModel.Name</h4>
+                                    <p class="text-muted">@profileModel.Email</p>
+
+                                    <hr />
+
+                                    <div class="d-grid gap-2">
+                                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal">
+                                            Edit Profile
+                                        </button>
+                                        <!--<a href="#" class="btn btn-outline-danger">Logout</a>-->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Main Content -->
+                        <div class="col-md-8">
+                            <div class="card shadow-sm">
+                                <div class="card-body">
+                                    <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link active" id="orders-tab" data-bs-toggle="tab" data-bs-target="#orders" type="button" role="tab">
+                                                Orders
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab">
+                                                Reviews
+                                            </button>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <button class="nav-link" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab">
+                                                Personal Info
+                                            </button>
+                                        </li>
+                                    </ul>
+
+                                    <div class="tab-content mt-4" id="profileTabsContent">
+                                        <!-- Orders -->
+                                        <div class="tab-pane fade show active" id="orders" role="tabpanel">
+                                            <div class="table-responsive">
+                                                <table class="table table-striped">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Order #</th>
+                                                            <th>Date</th>
+                                                            <th>Total</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td>12345</td>
+                                                            <td>2025-08-10</td>
+                                                            <td>$49.99</td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>12346</td>
+                                                            <td>2025-09-05</td>
+                                                            <td>$79.00</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <!-- Reviews -->
+                                        <div class="tab-pane fade" id="reviews" role="tabpanel">
+                                            <div class="border rounded p-3 mb-3">
+                                                <strong>Product A</strong>
+                                                <p class="mb-1">Great quality and fast delivery!</p>
+                                                <small class="text-muted">Posted 2025-09-02</small>
+                                            </div>
+
+                                            <div class="border rounded p-3 mb-3">
+                                                <strong>Product B</strong>
+                                                <p class="mb-1">Good value for the price.</p>
+                                                <small class="text-muted">Posted 2025-08-20</small>
+                                            </div>
+                                        </div>
+
+                                        <!-- Personal Info -->
+                                        <div class="tab-pane fade" id="info" role="tabpanel">
+                                            <dl class="row mb-0">
+                                                <dt class="col-sm-4">Full Name</dt>
+                                                <dd class="col-sm-8">John Doe</dd>
+
+                                                <dt class="col-sm-4">Email</dt>
+                                                <dd class="col-sm-8">john.doe@example.com</dd>
+
+                                                <dt class="col-sm-4">Member Since</dt>
+                                                <dd class="col-sm-8">January 2023</dd>
+                                            </dl>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Update Profile Modal -->
+                <div class="modal fade" id="updateProfileModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Update Profile</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="FullName" class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" id="FullName" value="John Doe">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="Email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="Email" value="john.doe@example.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ProfileImage" class="form-label">Profile Image</label>
+                                    <input type="file" class="form-control" id="ProfileImage">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary">Save changes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            else if (setupData is QrCodeSetupData qrCodeSetupData)
+            {
+                <div class="container my-5">
+                    <div class="row justify-content-center">
+                        <div class="col-md-5">
+                            @using (Html.BeginUmbracoForm<UmbTwoFactorLoginController>(nameof(UmbTwoFactorLoginController.ValidateAndSaveSetup)))
+                            {
+                                @Html.AntiForgeryToken()
+
+                                <div class="card shadow-lg rounded p-4 text-center bg-light">
+                                    <h2 class="mb-4">Setup 2FA</h2>
+
+                                    <img src="@qrCodeSetupData?.SetupCode?.QrCodeSetupImageUrl"
+                                         class="img-fluid d-block mx-auto mb-3"
+                                         style="max-width: 250px;"
+                                         alt="QR Code" />
+
+                                    <p class="mb-4">
+                                        Scan the code above with your authenticator app<br />
+                                        and enter the resulting code below to validate:
+                                    </p>
+
+                                    <input type="hidden" name="providerName" value="@providerName" />
+                                    <input type="hidden" name="secret" value="@qrCodeSetupData?.Secret" />
+
+                                    <div class="mb-3">
+                                        <input type="text" name="code" class="form-control text-center" placeholder="Enter code" required />
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary w-100">Validate & Save</button>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    }
+}

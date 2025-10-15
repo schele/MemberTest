@@ -1,0 +1,79 @@
+﻿@using MembersTestUmbraco16.Controllers.SurfaceControllers
+@using MembersTestUmbraco16.Models.ViewModels
+@using Umbraco.Cms.Web.Common.PublishedModels;
+
+@inherits UmbracoViewPage<IBase>
+
+@{
+    Layout = null;
+
+    var isLoggedIn = User.Identity?.IsAuthenticated ?? false;
+    var startPage = Umbraco.ContentAtRoot().OfType<Start>().FirstOrDefault();
+    var settingsPage = startPage?.DescendantOrSelf<Settings>();
+    var menu = settingsPage.Menu.ToList();
+    menu.Insert(0, startPage);
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>My Site</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    @foreach (var item in menu)
+                    {
+                        var active = item.Id == Model.Id ? "active" : "";
+                        <li class="nav-item">
+                            <a class="nav-link @active" href="@item.Url()">@item.Name</a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link" href="/umbraco">Backoffice</a>
+                    </li>
+                </ul>
+                <div class="d-flex">
+                    @if (isLoggedIn)
+                    {
+                        @using (Html.BeginUmbracoForm<MemberLogoutController>(nameof(MemberLogoutController.Logout)))
+                        {
+                            <button type="submit" class="btn btn-primary me-2">Logga ut</button>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/login" class="btn btn-primary me-2">Logga In</a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="container my-5">
+        @RenderBody()
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-3 mt-auto">
+        <div class="container text-center">
+            &copy; 2025 MySite. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS (bundle includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
