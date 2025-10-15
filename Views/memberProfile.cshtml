@@ -10,30 +10,31 @@
 @* @inherits UmbracoViewPage<MemberProfileViewModel> *@
 
 @inject MemberModelBuilderFactory memberModelBuilderFactory
-@inject ITwoFactorLoginService twoFactorLoginService
 @inject IMemberService _memberService
 @inject UmbracoHelper _umbraco
+@inject ITwoFactorLoginService twoFactorLoginService
+@inject UmbracoAppAuthenticator appAuthenticator
 
 @{
     Layout = "root.cshtml";
-}
 
-@{
     var profileModel = await memberModelBuilderFactory
         .CreateProfileModel()
         .BuildForCurrentMemberAsync();
+
+    var providerNames = twoFactorLoginService.GetAllProviderNames();
+    var enabledProviders = await twoFactorLoginService.GetEnabledTwoFactorProviderNamesAsync(profileModel.Key);
     var member = _memberService.GetByUsername(profileModel.UserName);
     var imageUrl = member?.ImageUrl("image", _umbraco);
-    var providerNames = twoFactorLoginService.GetAllProviderNames();
 
     if (providerNames.Any())
     {
         <div asp-validation-summary="All" class="text-danger"></div>
+
         foreach (var providerName in providerNames)
         {
-            var setupData = await twoFactorLoginService.GetSetupInfoAsync(profileModel.Key, providerName);
-
-            if (setupData is null)
+            // Check if this provider is already enabled for the member
+            if (enabledProviders.Contains(providerName, StringComparer.OrdinalIgnoreCase))
             {
                 <div class="container my-5">
                     <div class="row">
@@ -47,9 +48,7 @@
                                          style="width: 120px; height: 120px; object-fit: cover;">
                                     <h4 class="mb-0">@profileModel.Name</h4>
                                     <p class="text-muted">@profileModel.Email</p>
-
                                     <hr />
-
                                     <div class="d-grid gap-2">
                                         <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#updateProfileModal">
                                             Edit Profile
@@ -174,39 +173,41 @@
                     </div>
                 </div>
             }
-            else if (setupData is QrCodeSetupData qrCodeSetupData)
+            else
             {
-                <div class="container my-5">
-                    <div class="row justify-content-center">
-                        <div class="col-md-5">
-                            @using (Html.BeginUmbracoForm<UmbTwoFactorLoginController>(nameof(UmbTwoFactorLoginController.ValidateAndSaveSetup)))
-                            {
-                                <div class="card shadow-lg rounded p-4 text-center bg-light">
-                                    <h2 class="mb-4">Setup 2FA</h2>
+                // Provider not enabled — show setup info
+                var secret = Guid.NewGuid().ToString("N");
+                var setupData = await appAuthenticator.GetSetupDataAsync(profileModel.Key, secret);
 
-                                    <img src="@qrCodeSetupData?.SetupCode?.QrCodeSetupImageUrl"
-                                         class="img-fluid d-block mx-auto mb-3"
-                                         style="max-width: 250px;"
-                                         alt="QR Code" />
-
-                                    <p class="mb-4">
-                                        Scan the code above with your authenticator app<br />
-                                        and enter the resulting code below to validate:
-                                    </p>
-
-                                    <input type="hidden" name="providerName" value="@providerName" />
-                                    <input type="hidden" name="secret" value="@qrCodeSetupData?.Secret" />
-
-                                    <div class="mb-3">
-                                        <input type="text" name="code" class="form-control text-center" placeholder="Enter code" required />
+                if (setupData is QrCodeSetupData qr)
+                {
+                    <div class="container my-5">
+                        <div class="row justify-content-center">
+                            <div class="col-md-5">
+                                @using (Html.BeginUmbracoForm<UmbTwoFactorLoginController>(nameof(UmbTwoFactorLoginController.ValidateAndSaveSetup)))
+                                {
+                                    <div class="card shadow-lg rounded p-4 text-center bg-light">
+                                        <h2 class="mb-4">Setup 2FA</h2>
+                                        <img src="@qr.SetupCode.QrCodeSetupImageUrl"
+                                             class="img-fluid d-block mx-auto mb-3"
+                                             style="max-width: 250px;"
+                                             alt="QR Code" />
+                                        <p class="mb-4">
+                                            Scan the code above with your authenticator app<br />
+                                            and enter the resulting code below to validate:
+                                        </p>
+                                        <input type="hidden" name="providerName" value="@providerName" />
+                                        <input type="hidden" name="secret" value="@qr.Secret" />
+                                        <div class="mb-3">
+                                            <input type="text" name="code" class="form-control text-center" placeholder="Enter code" required />
+                                        </div>
+                                        <button type="submit" class="btn btn-primary w-100">Validate & Save</button>
                                     </div>
-
-                                    <button type="submit" class="btn btn-primary w-100">Validate & Save</button>
-                                </div>
-                            }
+                                }
+                            </div>
                         </div>
                     </div>
-                </div>
+                }
             }
         }
     }

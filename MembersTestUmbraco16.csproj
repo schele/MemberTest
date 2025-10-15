@@ -1,16 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
+    <Content Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
+    <EmbeddedResource Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
+    <None Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
+  </ItemGroup>
   <ItemGroup>
     <Content Remove="Views\exampleMemberPage.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
-    <PackageReference Include="Umbraco.Cms" Version="14.3.2" />
+    <PackageReference Include="Umbraco.Cms" Version="16.2.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -20,6 +26,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="wwwroot\App_Plugins\" />
     <Folder Include="wwwroot\media\" />
   </ItemGroup>
 

@@ -60,7 +60,7 @@ namespace MembersTestUmbraco16.Models.ViewModels
 
 		public IEnumerable<IPublishedContent> Children => Content.Children;
 
-		public IEnumerable<IPublishedContent> ChildrenForAllCultures => Content.ChildrenForAllCultures;
+		//public IEnumerable<IPublishedContent> ChildrenForAllCultures => Content.ChildrenForAllCultures;
 
 		public IPublishedContentType ContentType => Content.ContentType;
 
