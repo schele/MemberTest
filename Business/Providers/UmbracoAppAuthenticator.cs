@@ -15,7 +15,7 @@ namespace MembersTestUmbraco16.Business.Providers
 
     public class UmbracoAppAuthenticator : ITwoFactorProvider
     {
-        public const string Name = "UmbracoAppAuthenticator";
+        public const string Name = "2FA Member";
         private readonly IMemberService _memberService;
 
         public UmbracoAppAuthenticator(IMemberService memberService)
@@ -28,10 +28,10 @@ namespace MembersTestUmbraco16.Business.Providers
         public Task<ISetupTwoFactorModel> GetSetupDataAsync(Guid userOrMemberKey, string secret)
         {
             var member = _memberService.GetByKey(userOrMemberKey);
-
             var applicationName = "2FA Member";
             var twoFactorAuthenticator = new TwoFactorAuthenticator();
-            SetupCode setupInfo = twoFactorAuthenticator.GenerateSetupCode(applicationName, member.Username, secret, false);
+            var setupInfo = twoFactorAuthenticator.GenerateSetupCode(applicationName, member.Username, secret, false);
+            
             return Task.FromResult<ISetupTwoFactorModel>(new QrCodeSetupData()
             {
                 SetupCode = setupInfo,
@@ -42,6 +42,7 @@ namespace MembersTestUmbraco16.Business.Providers
         public bool ValidateTwoFactorPIN(string secret, string code)
         {
             var twoFactorAuthenticator = new TwoFactorAuthenticator();
+
             return twoFactorAuthenticator.ValidateTwoFactorPIN(secret, code);
         }
 
