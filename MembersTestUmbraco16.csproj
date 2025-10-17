@@ -5,12 +5,6 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
-    <Content Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
-    <EmbeddedResource Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
-    <None Remove="wwwroot\App_Plugins\TwoFactorProviders\**" />
-  </ItemGroup>
-  <ItemGroup>
     <Content Remove="Views\exampleMemberPage.cshtml" />
   </ItemGroup>
 
@@ -26,7 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="wwwroot\App_Plugins\" />
     <Folder Include="wwwroot\media\" />
   </ItemGroup>
 

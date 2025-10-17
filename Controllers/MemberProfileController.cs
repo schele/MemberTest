@@ -22,7 +22,14 @@ namespace MembersTestUmbraco16.Controllers
 			{
 				var model = new MemberProfileViewModel(memberProfile, _umbracoContextAccessor);
 
-				return CurrentTemplate(model);
+                // Access TempData
+                //if (TempData["is2faEnabled"] != null)
+                //{
+                //    var is2faEnabled = TempData["is2faEnabled"];
+                //}
+
+
+                return CurrentTemplate(model);
 			}
 
 			return null;	

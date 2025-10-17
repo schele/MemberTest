@@ -10,7 +10,8 @@ namespace MembersTestUmbraco16.Business.Composers
         {
             var identityBuilder = new BackOfficeIdentityBuilder(builder.Services);
 
-            identityBuilder.AddTwoFactorProvider<UmbracoUserAppAuthenticator>(UmbracoUserAppAuthenticator.Name);
+            identityBuilder.AddTwoFactorProvider<UmbracoUserAppAuthenticator>(
+                UmbracoUserAppAuthenticator.Name);
         }
     }
 }

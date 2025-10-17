@@ -1,0 +1,91 @@
+﻿@using MembersTestUmbraco16.Business.Providers
+@using MembersTestUmbraco16.Controllers.SurfaceControllers
+@using MembersTestUmbraco16.Models.ViewModels
+@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Website.Controllers
+@using Umbraco.Cms.Web.Website.Models
+
+@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<TwoFactorAuthViewModel>
+
+@inject UmbracoAppAuthenticator appAuthenticator
+@inject MemberModelBuilderFactory memberModelBuilderFactory
+
+@{
+    Layout = "Root";
+
+    // var profileModel = await memberModelBuilderFactory
+    //     .CreateProfileModel()
+    //     .BuildForCurrentMemberAsync();
+    var s = Model.MemberKey;
+}
+
+@if (!Model.Is2faEnabled)
+{
+    // Provider not enabled — show setup info
+    var secret = Guid.NewGuid().ToString("N");
+    var setupData = await appAuthenticator.GetSetupDataAsync(new Guid(Model.MemberKey), secret);
+
+    if (setupData is QrCodeSetupData qr)
+    {
+        <div class="container my-5">
+            <div class="row justify-content-center">
+                <div class="col-md-5">
+                    @using (Html.BeginUmbracoForm<MemberLoginController>(nameof(MemberLoginController.ValidateAndSaveSetup)))
+                    {
+                        <div class="card shadow-lg rounded p-4 text-center bg-light">
+                            <h2 class="mb-4">Setup 2FA</h2>
+                            <img src="@qr.SetupCode.QrCodeSetupImageUrl"
+                                 class="img-fluid d-block mx-auto mb-3"
+                                 style="max-width: 250px;"
+                                 alt="QR Code" />
+                            <p class="mb-4">
+                                Scan the code above with your authenticator app<br />
+                                and enter the resulting code below to validate:
+                            </p>
+                            <input type="hidden" name="providerName" value="2FA Member" />
+                            <input type="hidden" name="secret" value="@qr.Secret" />
+                            <input type="hidden" name="memberKey" value="@Model.MemberKey" />
+                            <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+
+
+                            <div class="mb-3">
+                                <input type="text" name="code" class="form-control text-center" placeholder="Enter code" required />
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">Validate & Save</button>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    }
+
+}
+else
+{
+    <div class="container my-5">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                @using (Html.BeginUmbracoForm<MemberLoginController>(nameof(MemberLoginController.Verify2FACode)))
+                {
+                    <div class="card shadow-lg rounded p-4 text-center bg-light">
+                        <h2 class="mb-4">Setup 2FA</h2>
+
+                        <p class="mb-4">
+                            Scan the code above with your authenticator app<br />
+                            and enter the resulting code below to validate:
+                        </p>
+                        <input type="hidden" name="provider" value="2FA Member" />
+                        @* <input type="hidden" name="secret" value="@qr.Secret" /> *@
+                        <input type="hidden" name="memberKey" value="@Model.MemberKey" />
+                        <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
+
+                        <div class="mb-3">
+                            <input type="text" name="code" class="form-control text-center" placeholder="Enter code" required />
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">Validate</button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
