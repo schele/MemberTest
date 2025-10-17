@@ -7,8 +7,6 @@
 @using Umbraco.Cms.Web.Website.Models;
 @using Umbraco.Cms.Web.Common;
 
-@* @inherits UmbracoViewPage<MemberProfileViewModel> *@
-
 @inject MemberModelBuilderFactory memberModelBuilderFactory
 @inject IMemberService _memberService
 @inject UmbracoHelper _umbraco
@@ -22,7 +20,7 @@
         .CreateProfileModel()
         .BuildForCurrentMemberAsync();
 
-    var member = _memberService.GetByUsername(profileModel.UserName);
+    var member = _memberService.GetByUsername(profileModel?.UserName);
     var imageUrl = member?.ImageUrl("image", _umbraco);
 
     <div class="container my-5">

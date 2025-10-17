@@ -12,16 +12,10 @@
 
 @{
     Layout = "Root";
-
-    // var profileModel = await memberModelBuilderFactory
-    //     .CreateProfileModel()
-    //     .BuildForCurrentMemberAsync();
-    var s = Model.MemberKey;
 }
 
 @if (!Model.Is2faEnabled)
 {
-    // Provider not enabled — show setup info
     var secret = Guid.NewGuid().ToString("N");
     var setupData = await appAuthenticator.GetSetupDataAsync(new Guid(Model.MemberKey), secret);
 
@@ -34,7 +28,7 @@
                     {
                         <div class="card shadow-lg rounded p-4 text-center bg-light">
                             <h2 class="mb-4">Setup 2FA</h2>
-                            <img src="@qr.SetupCode.QrCodeSetupImageUrl"
+                            <img src="@qr?.SetupCode?.QrCodeSetupImageUrl"
                                  class="img-fluid d-block mx-auto mb-3"
                                  style="max-width: 250px;"
                                  alt="QR Code" />
@@ -43,11 +37,9 @@
                                 and enter the resulting code below to validate:
                             </p>
                             <input type="hidden" name="providerName" value="2FA Member" />
-                            <input type="hidden" name="secret" value="@qr.Secret" />
+                            <input type="hidden" name="secret" value="@qr?.Secret" />
                             <input type="hidden" name="memberKey" value="@Model.MemberKey" />
                             <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
-
-
                             <div class="mb-3">
                                 <input type="text" name="code" class="form-control text-center" placeholder="Enter code" required />
                             </div>
@@ -58,7 +50,6 @@
             </div>
         </div>
     }
-
 }
 else
 {
@@ -69,16 +60,13 @@ else
                 {
                     <div class="card shadow-lg rounded p-4 text-center bg-light">
                         <h2 class="mb-4">Setup 2FA</h2>
-
                         <p class="mb-4">
                             Scan the code above with your authenticator app<br />
                             and enter the resulting code below to validate:
                         </p>
                         <input type="hidden" name="provider" value="2FA Member" />
-                        @* <input type="hidden" name="secret" value="@qr.Secret" /> *@
                         <input type="hidden" name="memberKey" value="@Model.MemberKey" />
                         <input type="hidden" name="returnUrl" value="@Model.ReturnUrl" />
-
                         <div class="mb-3">
                             <input type="text" name="code" class="form-control text-center" placeholder="Enter code" required />
                         </div>

@@ -1,4 +1,4 @@
-﻿using MembersTestUmbraco16.Models.ViewModels;
+﻿using MembersTestUmbraco16.Business.Extensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Core.Cache;
@@ -21,7 +21,6 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
 		private readonly IMemberManager _memberManager;
         private readonly ILogger<MemberLoginController> _logger;
         private readonly ITwoFactorLoginService _twoFactorLoginService;
-
 
         public MemberLoginController(ILogger<MemberLoginController> logger, ITwoFactorLoginService twoFactorLoginService, IMemberSignInManager memberSignInManager, IMemberManager memberManager, IUmbracoContextAccessor umbracoContextAccessor, IUmbracoDatabaseFactory databaseFactory, ServiceContext services, AppCaches appCaches, IProfilingLogger profilingLogger, IPublishedUrlProvider publishedUrlProvider) : base(umbracoContextAccessor, databaseFactory, services, appCaches, profilingLogger, publishedUrlProvider)
 		{
@@ -50,15 +49,9 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
                     TempData["memberKey"] = member.Key;
                     TempData["returnUrl"] = returnUrl;
 
-                    //await _memberSignInManager.SignInAsync(member, isPersistent: true);
-
                     return Redirect("/twofactorauth");
-
-                    //return Redirect("/memberprofile");
                 }
 			}
-
-            TempData["LoginError"] = "Invalid login credentials";
 
 			return RedirectToCurrentUmbracoPage();
 		}
@@ -71,8 +64,6 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
         Guid memberKey,
         string? returnUrl = null)
         {
-            //MemberIdentityUser? member = await _memberManager.GetCurrentMemberAsync();
-
             var isValid = _twoFactorLoginService.ValidateTwoFactorSetup(providerName, secret, code);
 
             if (!isValid)
@@ -99,8 +90,7 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
                 await _memberSignInManager.SignInAsync(member, isPersistent: true);
             }
 
-            //todo strippa hela urlen tex /memberprofile, använd RedirectToLocal()
-            return Redirect(returnUrl);
+            return RedirectToLocal(returnUrl?.GetAbsolutePath());
         }
 
         [AllowAnonymous]
@@ -112,59 +102,26 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
             {
                 _logger.LogWarning("Verify2FACode :: No verified member found, returning 404");
 
-                return NotFound();                
+                return NotFound();
             }
-
-            //await _memberSignInManager.SignInAsync(member, isPersistent: true);
-
-            //var user = await _memberSignInManager.GetTwoFactorAuthenticationUserAsync();
-
-            //if (user == null!)
-            //{
-            //    _logger.LogWarning("Verify2FACode :: No verified member found, returning 404");
-
-            //    return NotFound();
-            //}
-
-            if (ModelState.IsValid)
+            else
             {
-                var result = await _memberSignInManager.TwoFactorSignInAsync(
-                    model.Provider,
-                    model.Code,
-                    model.IsPersistent,
-                    model.RememberClient);
+                var secret = await _twoFactorLoginService.GetSecretForUserAndProviderAsync(memberKey, model.Provider);
 
-                if (result.Succeeded)
+                if (secret != null)
                 {
-                    //todo strippa hela urlen tex /memberprofile, använd RedirectToLocal()
-                    return Redirect(returnUrl);
-                }
+                    var isValidCode = _twoFactorLoginService.ValidateTwoFactorSetup(model.Provider, secret, model.Code);
 
-                if (result.IsLockedOut)
-                {
-                    ModelState.AddModelError(nameof(Verify2FACodeModel.Code), "Member is locked out");
+                    if (isValidCode)
+                    {
+                        await _memberSignInManager.SignInAsync(member, isPersistent: true);
+                    }
                 }
-                else if (result.IsNotAllowed)
-                {
-                    ModelState.AddModelError(nameof(Verify2FACodeModel.Code), "Member is not allowed");
-                }
-                else
-                {
-                    ModelState.AddModelError(nameof(Verify2FACodeModel.Code), "Invalid code");
-
-                    return Redirect(returnUrl);
-                }
+                
+                return RedirectToLocal(returnUrl?.GetAbsolutePath());
             }
-
-            // We need to set this, to ensure we show the 2fa login page
-            var providerNames =
-                await _twoFactorLoginService.GetEnabledTwoFactorProviderNamesAsync(memberKey);
-            ViewData.SetTwoFactorProviderNames(providerNames);
-
-            return CurrentUmbracoPage();
         }
 
-        private IActionResult RedirectToLocal(string? returnUrl) =>
-        Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToCurrentUmbracoPage();
+        private IActionResult RedirectToLocal(string? returnUrl) => Url.IsLocalUrl(returnUrl) ? Redirect(returnUrl) : RedirectToCurrentUmbracoPage();
     }
 }
