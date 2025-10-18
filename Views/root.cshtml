@@ -1,6 +1,7 @@
 ﻿@using MembersTestUmbraco16.Controllers.SurfaceControllers
 @using MembersTestUmbraco16.Models.ViewModels
-@using Umbraco.Cms.Web.Common.PublishedModels;
+@using Umbraco.Cms.Web.Common.PublishedModels
+@using MembersTestUmbraco16.Shared
 
 @inherits UmbracoViewPage<IBase>
 
@@ -23,10 +24,14 @@
 
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <link href="~/css/site.css" rel="stylesheet" />
 </head>
 <body>
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+@*     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -60,20 +65,77 @@
             </div>
         </div>
     </nav>
+ *@
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg">
+        <div class="container">
+            <a class="navbar-brand" href="/">ShopLuxe</a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    @foreach (var item in menu)
+                    {
+                        var active = item.Id == Model.Id ? "active" : "";
+                        <li class="nav-item">
+                            <a class="nav-link @active" href="@item.Url()">@item.Name</a>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link" href="/umbraco">Backoffice</a>
+                    </li>
+                </ul>
+
+                <div class="d-flex align-items-center">
+                    <!-- Profile Dropdown -->
+                    <div class="dropdown ms-3">
+                        <!-- Use a user icon -->
+                        <i class="fa-solid fa-user dropdown-toggle" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false"
+                           style="font-size:1.6rem; color:#0056b3; cursor:pointer;"></i>
+
+                        <!-- Dropdown menu -->
+                        <ul class="dropdown-menu dropdown-menu-end login-menu" aria-labelledby="profileDropdown">
+                            @if (isLoggedIn)
+                            {
+                                <li>
+                                @using (Html.BeginUmbracoForm<MemberLogoutController>(nameof(MemberLogoutController.Logout)))
+                                {
+                                    <button type="submit" class="dropdown-item btn">Logout</button>
+                                }
+                                </li>
+                            }
+                            else
+                            {
+                                <li><a class="dropdown-item" href="/login">Login</a></li>
+                            }
+                        </ul>
+                    </div>
+
+                    <component type="typeof(Cart)" render-mode="Server" />
+                    
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <!-- Main content -->
     <div class="container my-5">
         @RenderBody()
     </div>
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-3 mt-auto">
-        <div class="container text-center">
-            &copy; 2025 MySite. All rights reserved.
-        </div>
-    </footer>
+    @await Html.PartialAsync("/Views/Partials/Footer.cshtml")
+
+    <!-- Bootstrap + Font Awesome -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
     <!-- Bootstrap 5 JS (bundle includes Popper) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script src="_framework/blazor.server.js"></script>
 </body>
 </html>

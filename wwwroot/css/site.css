@@ -1,0 +1,102 @@
+﻿body {
+    background-color: #f8fbff !important;
+}
+
+.navbar {
+    background-color: #cfe9ff; /* Light blue navbar */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 1.5rem;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.6rem;
+    color: #0056b3 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.nav-link {
+    color: #1a1a1a !important;
+    font-weight: 500;
+    margin: 0 0.6rem;
+    padding: 0.4rem 0.8rem;
+    position: relative;
+    transition: color 0.2s ease-in-out;
+    border-radius: 0; /* remove bulky corners */
+}
+
+    .nav-link:hover {
+        color: #0056b3 !important;
+    }
+
+    .nav-link.active {
+        color: #0056b3 !important;
+        font-weight: 700;
+    }
+
+        /* Modern active underline */
+        .nav-link.active::after {
+            content: "";
+            display: block;
+            height: 3px;
+            width: 100%;
+            background-color: #0056b3;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
+        }
+
+.cart-icon, .profile-icon {
+    position: relative;
+    font-size: 1.6rem;
+    color: #0056b3;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out, color 0.2s;
+}
+
+    .cart-icon:hover, .profile-icon:hover {
+        color: #003f80;
+        transform: scale(1.1);
+    }
+
+.cart-badge {
+    position: absolute;
+    top: -6px;
+    right: -10px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    font-size: 0.75rem;
+    padding: 2px 6px;
+    font-weight: bold;
+}
+
+/* Remove Bootstrap caret from dropdown-toggle */
+.dropdown-toggle::after {
+    display: none !important;
+}
+
+/* Remove all hover/focus effects from dropdown items */
+.dropdown-item,
+.dropdown-item:hover,
+.dropdown-item:focus {
+    color: #0056b3 !important; /* fixed text color */
+    background-color: transparent !important; /* no background change */
+    text-decoration: none; /* remove underline if any */
+}
+
+.login-menu:hover {
+    background-color: #cfe9ff !important;
+}
+
+/* Make button inside dropdown align like a link */
+.dropdown-item.btn {
+    display: block; /* full width like a link */
+    width: 100%;
+    padding: 0.25rem 1rem; /* match Bootstrap dropdown-item padding */
+    text-align: left; /* align text */
+    background: transparent;
+    border: none;
+}

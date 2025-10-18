@@ -1,0 +1,96 @@
+﻿@using MembersTestUmbraco16.Business.Services.Interfaces
+@using MembersTestUmbraco16.Models
+@using MembersTestUmbraco16.Models.Search
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Web
+
+@inject ISearchService _searchService
+
+@code
+{
+    private bool isSearching = false;
+    private bool hasSearched = false;
+    private SearchModel searchModel = new SearchModel();
+    private List<SearchHit> hits = new List<SearchHit>();
+
+    private async Task FindContentAsync()
+    {
+        if (string.IsNullOrWhiteSpace(searchModel.Query))
+        {
+            return;
+        }
+        else
+        {
+            hits?.Clear();
+            isSearching = true;
+            hasSearched = false;
+
+            try
+            {
+                await Task.Delay(750);
+                hits = _searchService.Search(searchModel.Query);
+
+                hasSearched = true;
+            }
+            finally
+            {
+                isSearching = false;
+            }
+        }
+    }
+}
+
+<section class="py-5" style="background-color: #f8fbff;">
+    <div class="container">
+        <!-- Search bar -->
+        <div class="row mb-5 justify-content-center">
+            <div class="col-md-8">
+                <EditForm Model="@searchModel" OnValidSubmit="FindContentAsync">
+                    <div class="input-group input-group-lg shadow-sm">
+                        <InputText id="searchInput" class="form-control search-input" name="query" type="search" placeholder="Search tennis rackets..." aria-label="Search" @bind-Value="searchModel.Query" disabled="@isSearching" />
+                       @*  <button class="btn btn-primary" type="submit"> *@
+                            @* <i class="fa-solid fa-magnifying-glass"></i> *@
+                            <button type="submit" class="input-group-text search-button" id="submitButton" disabled="@isSearching">
+                                @if (isSearching)
+                                {
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                }
+                                else
+                                {
+                                    <i class="fas fa-search"></i>
+                                }
+                            </button>
+                        @* </button> *@
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+
+        @if (hasSearched)
+        {
+            <!-- Results header -->
+            <div class="mb-4 text-center">
+                <h2 class="fw-bold" style="color:#0056b3;">Search Results for “@searchModel.Query”</h2>
+                <p class="text-muted">Showing @hits.Count rackets</p>
+            </div>
+
+            <!-- Product grid -->
+            <div class="row g-4">
+                @foreach (var item in hits)
+                {
+                    <div class="col-md-4">
+                        <div class="card border-0 shadow-sm h-100">
+                            <img src="@item.Image" class="card-img-top" alt="@item.Title">
+                            <div class="card-body text-center">
+                                <h5 class="card-title fw-bold">@item.Title</h5>
+                                <p class="text-muted mb-2">@item.Description</p>
+                                <h5 class="text-primary fw-bold mb-3">$@item.Price</h5>
+                                <button class="btn btn-outline-primary"><i class="fa-solid fa-cart-plus me-2"></i>Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</section>

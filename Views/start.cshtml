@@ -1,5 +1,6 @@
 ﻿@using MembersTestUmbraco16.Models.ViewModels
 @using Umbraco.Cms.Web.Common.PublishedModels;
+@using MembersTestUmbraco16.Shared
 
 @inherits UmbracoViewPage<StartViewModel>
 
@@ -7,4 +8,6 @@
 	Layout = "root.cshtml";
 }
 
-<h1>START</h1>
+<link href="~/css/search.css" rel="stylesheet" />
+
+<component type="typeof(Search)" render-mode="Server" />

@@ -23,7 +23,25 @@
       "applicationUrl": "https://localhost:44324;http://localhost:30457",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      }      
+      }
+    },
+    "schele-desktop": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:44324;http://localhost:30457",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "schele-desktop"
+      }
+    },
+    "schele-laptop": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:44324;http://localhost:30457",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "schele-laptop"
+      }
     }
   }
 }

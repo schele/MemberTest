@@ -1,4 +1,12 @@
+using MembersTestUmbraco16.Business.Services;
+using MembersTestUmbraco16.Business.Services.Interfaces;
+using Umbraco.Cms.Core.Services;
+
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+var environmentName = builder.Environment.EnvironmentName;
+builder.Configuration.AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: true);
+builder.Configuration.GetConnectionString("umbracoDbDSN");
 
 builder.CreateUmbracoBuilder()
     .AddBackOffice()
@@ -6,7 +14,14 @@ builder.CreateUmbracoBuilder()
     .AddComposers()
     .Build();
 
+builder.Services.AddServerSideBlazor();
+
+builder.Services.AddScoped<ISearchService, SearchService>();
+
+
 WebApplication app = builder.Build();
+
+app.MapBlazorHub();
 
 await app.BootUmbracoAsync();
 
