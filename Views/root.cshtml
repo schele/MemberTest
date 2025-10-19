@@ -31,43 +31,6 @@
 </head>
 <body>
     <!-- Navbar -->
-@*     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    @foreach (var item in menu)
-                    {
-                        var active = item.Id == Model.Id ? "active" : "";
-                        <li class="nav-item">
-                            <a class="nav-link @active" href="@item.Url()">@item.Name</a>
-                        </li>
-                    }
-                    <li class="nav-item">
-                        <a class="nav-link" href="/umbraco">Backoffice</a>
-                    </li>
-                </ul>
-                <div class="d-flex">
-                    @if (isLoggedIn)
-                    {
-                        @using (Html.BeginUmbracoForm<MemberLogoutController>(nameof(MemberLogoutController.Logout)))
-                        {
-                            <button type="submit" class="btn btn-primary me-2">Logga ut</button>
-                        }
-                    }
-                    else
-                    {
-                        <a href="/login" class="btn btn-primary me-2">Logga In</a>
-                    }
-                </div>
-            </div>
-        </div>
-    </nav>
- *@
-
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg">
         <div class="container">
             <a class="navbar-brand" href="/">ShopLuxe</a>

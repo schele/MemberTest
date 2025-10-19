@@ -59,9 +59,9 @@ else
                 @using (Html.BeginUmbracoForm<MemberLoginController>(nameof(MemberLoginController.Verify2FACode)))
                 {
                     <div class="card shadow-lg rounded p-4 text-center bg-light">
-                        <h2 class="mb-4">Setup 2FA</h2>
+                        <h2 class="mb-4">Validate 2FA</h2>
                         <p class="mb-4">
-                            Scan the code above with your authenticator app<br />
+                            Open your authenticator app<br />
                             and enter the resulting code below to validate:
                         </p>
                         <input type="hidden" name="provider" value="2FA Member" />
