@@ -5,6 +5,9 @@
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 	<ItemGroup>
+	  <Compile Remove="Models\Search\SearchHit.cs" />
+	</ItemGroup>
+	<ItemGroup>
 		<Content Remove="Views\exampleMemberPage.cshtml" />
 	</ItemGroup>
 

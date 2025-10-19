@@ -1,10 +1,9 @@
-﻿using MembersTestUmbraco16.Models.Search;
+﻿using MembersTestUmbraco16.Models;
 
 namespace MembersTestUmbraco16.Business.Services.Interfaces
 {
 	public interface ISearchService
 	{
-
-		List<SearchHit> Search(string query);
+		List<Product> Search(string query);
 	}
 }

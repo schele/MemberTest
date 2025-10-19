@@ -1,6 +1,5 @@
 using MembersTestUmbraco16.Business.Services;
 using MembersTestUmbraco16.Business.Services.Interfaces;
-using Umbraco.Cms.Core.Services;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -17,7 +16,7 @@ builder.CreateUmbracoBuilder()
 builder.Services.AddServerSideBlazor();
 
 builder.Services.AddScoped<ISearchService, SearchService>();
-
+builder.Services.AddSingleton<ICartService, CartService>();
 
 WebApplication app = builder.Build();
 
