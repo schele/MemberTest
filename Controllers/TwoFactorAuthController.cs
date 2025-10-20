@@ -25,12 +25,11 @@ namespace MembersTestUmbraco16.Controllers
 			{
 				var model = new TwoFactorAuthViewModel(memberProfile, _umbracoContextAccessor);
 
-                // Access TempData
                 if (TempData["is2faEnabled"] != null)
                 {
                     model.Is2faEnabled = Convert.ToBoolean(TempData["is2faEnabled"]);
 					model.MemberKey = TempData["memberKey"].ToString();
-					model.ReturnUrl = TempData["returnUrl"].ToString();
+					model.ReturnUrl = "/twofactorauth";
                 }
 
                 return CurrentTemplate(model);

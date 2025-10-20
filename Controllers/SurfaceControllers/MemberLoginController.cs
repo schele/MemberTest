@@ -32,7 +32,7 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
 
 		[HttpPost]
 		[ValidateAntiForgeryToken]
-		public async Task<IActionResult> MemberLogin(LoginModel model, string returnUrl)
+		public async Task<IActionResult> MemberLogin(LoginModel model, string? returnUrl = null)
 		{
             var member = await _memberManager.FindByNameAsync(model.Username);
 
@@ -42,12 +42,10 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
 
 				if (status)
 				{
-                    //check if 2fa is enabled on member
                     var is2faEnabled = await _memberManager.GetTwoFactorEnabledAsync(member);
 
                     TempData["is2faEnabled"] = is2faEnabled;
                     TempData["memberKey"] = member.Key;
-                    TempData["returnUrl"] = returnUrl;
 
                     return Redirect("/twofactorauth");
                 }
@@ -70,7 +68,10 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
             {
                 ModelState.AddModelError(nameof(code), "Invalid Code");
 
-                return CurrentUmbracoPage();
+                TempData["memberKey"] = memberKey;
+                TempData["is2faEnabled"] = false;
+
+                return RedirectToLocal("/twofactorauth");
             }
 
             var twoFactorLogin = new TwoFactorLogin
@@ -90,7 +91,7 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
                 await _memberSignInManager.SignInAsync(member, isPersistent: true);
             }
 
-            return RedirectToLocal(returnUrl?.GetAbsolutePath());
+            return RedirectToLocal("/memberprofile");
         }
 
         [AllowAnonymous]
@@ -116,9 +117,16 @@ namespace MembersTestUmbraco16.Controllers.SurfaceControllers
                     {
                         await _memberSignInManager.SignInAsync(member, isPersistent: true);
                     }
+                    else
+                    {
+                        TempData["is2faEnabled"] = true;
+                        TempData["memberKey"] = member.Key;
+
+                        return Redirect("/twofactorauth");
+                    }
                 }
                 
-                return RedirectToLocal(returnUrl?.GetAbsolutePath());
+                return RedirectToLocal("/memberprofile");
             }
         }
 
