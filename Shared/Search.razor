@@ -49,19 +49,16 @@
                 <EditForm Model="@searchModel" OnValidSubmit="FindContentAsync">
                     <div class="input-group input-group-lg shadow-sm">
                         <InputText id="searchInput" class="form-control search-input" name="query" type="search" placeholder="Search tennis rackets..." aria-label="Search" @bind-Value="searchModel.Query" disabled="@isSearching" />
-                       @*  <button class="btn btn-primary" type="submit"> *@
-                            @* <i class="fa-solid fa-magnifying-glass"></i> *@
-                            <button type="submit" class="input-group-text search-button" id="submitButton" disabled="@isSearching">
-                                @if (isSearching)
-                                {
-                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                }
-                                else
-                                {
-                                    <i class="fas fa-search"></i>
-                                }
-                            </button>
-                        @* </button> *@
+                        <button type="submit" class="input-group-text search-button" id="submitButton" disabled="@isSearching">
+                            @if (isSearching)
+                            {
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            }
+                            else
+                            {
+                                <i class="fas fa-search"></i>
+                            }
+                        </button>
                     </div>
                 </EditForm>
             </div>
@@ -69,13 +66,10 @@
 
         @if (hasSearched)
         {
-            <!-- Results header -->
             <div class="mb-4 text-center">
                 <h2 class="fw-bold" style="color:#0056b3;">Search Results for “@searchModel.Query”</h2>
                 <p class="text-muted">Showing @products.Count rackets</p>
             </div>
-
-            <!-- Product grid -->
             <div class="row g-4">
                 @foreach (var item in products)
                 {
