@@ -18,7 +18,7 @@ using Umbraco.Extensions;
 
 namespace Umbraco.Cms.Web.Common.PublishedModels
 {
-	/// <summary>MemberProfile</summary>
+	/// <summary>Member Profile</summary>
 	[PublishedModel("memberProfile")]
 	public partial class MemberProfile : PublishedContentModel, IBase
 	{

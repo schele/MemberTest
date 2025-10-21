@@ -13,7 +13,12 @@ builder.CreateUmbracoBuilder()
     .AddComposers()
     .Build();
 
-builder.Services.AddServerSideBlazor();
+builder.Services.AddServerSideBlazor()
+    .AddCircuitOptions(options =>
+    {
+        options.DetailedErrors = true;
+        options.DisconnectedCircuitRetentionPeriod = TimeSpan.FromMinutes(5);
+    });
 
 builder.Services.AddScoped<ISearchService, SearchService>();
 builder.Services.AddSingleton<ICartService, CartService>();

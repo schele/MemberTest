@@ -5,13 +5,13 @@
 @using Umbraco.Cms.Web.Website.Controllers
 @using Umbraco.Cms.Web.Website.Models
 
-@inherits Umbraco.Cms.Web.Common.Views.UmbracoViewPage<TwoFactorAuthViewModel>
+@inherits UmbracoViewPage<TwoFactorAuthViewModel>
 
 @inject UmbracoAppAuthenticator appAuthenticator
 @inject MemberModelBuilderFactory memberModelBuilderFactory
 
 @{
-    Layout = "Root";
+    Layout = "Root.cshtml";
 }
 
 @if (!Model.Is2faEnabled)

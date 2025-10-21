@@ -6,12 +6,17 @@
 {
     protected override void OnInitialized()
     {
-        _cartService.OnChange += StateHasChanged;
+        _cartService.OnChange += HandleCartChanged;
+    }
+
+    private void HandleCartChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        _cartService.OnChange -= StateHasChanged;
+        _cartService.OnChange -= HandleCartChanged;
     }
 }
 
