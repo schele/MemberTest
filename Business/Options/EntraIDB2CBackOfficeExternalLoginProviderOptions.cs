@@ -7,6 +7,7 @@ using Umbraco.Cms.Core.Models.Membership;
 using Umbraco.Cms.Core.Security;
 using Umbraco.Cms.Core.Services;
 using Umbraco.Cms.Core.Web;
+using Umbraco.Cms.Web.Common.PublishedModels;
 
 namespace MembersTestUmbraco16.Business.Options
 {
@@ -53,7 +54,7 @@ namespace MembersTestUmbraco16.Business.Options
 
                             if (content != null)
                             {
-                                //var settingsPage = content.GetAtRoot().DescendantsOrSelf<GlobalSettings>().FirstOrDefault();
+                                var settingsPage = content.GetAtRoot().DescendantsOrSelf<GlobalSettings>().FirstOrDefault();
 
                                 //if (settingsPage != null)
                                 //{
