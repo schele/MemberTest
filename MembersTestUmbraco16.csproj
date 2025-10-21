@@ -10,6 +10,14 @@
 	<ItemGroup>
 		<Content Remove="Views\exampleMemberPage.cshtml" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Content Include="App_Plugins\Client\index.html" />
+	  <Content Include="App_Plugins\Client\package-lock.json" />
+	  <Content Include="App_Plugins\Client\package.json" />
+	  <Content Include="App_Plugins\Client\src\index.css" />
+	  <Content Include="App_Plugins\Client\tsconfig.json" />
+	  <Content Include="App_Plugins\Client\umbraco-package.json" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="GoogleAuthenticator" Version="3.2.0" />
@@ -26,7 +34,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="wwwroot\App_Plugins\Client\" />
 		<Folder Include="wwwroot\media\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="App_Plugins\Client\.gitignore" />
+	  <None Include="App_Plugins\Client\public\vite.svg" />
+	  <None Include="App_Plugins\Client\src\assets\lit.svg" />
+	  <None Include="App_Plugins\Client\vite.config.js" />
+	  <None Include="App_Plugins\Client\vite.config.js.map" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -59,6 +76,13 @@
 			<DestinationFile>appsettings.*.json</DestinationFile>
 			<!-- Specify the destination file -->
 		</ScFilesToTransform>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <TypeScriptCompile Include="App_Plugins\Client\src\key-value-tags-editor.element.ts" />
+	  <TypeScriptCompile Include="App_Plugins\Client\src\my-element.ts" />
+	  <TypeScriptCompile Include="App_Plugins\Client\src\vite-env.d.ts" />
+	  <TypeScriptCompile Include="App_Plugins\Client\vite.config.ts" />
 	</ItemGroup>
 
 	<Target Name="TransformConfig" AfterTargets="Build">
