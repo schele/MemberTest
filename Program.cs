@@ -1,3 +1,4 @@
+using MembersTestUmbraco16.Business.Extensions;
 using MembersTestUmbraco16.Business.Services;
 using MembersTestUmbraco16.Business.Services.Interfaces;
 
@@ -11,6 +12,7 @@ builder.CreateUmbracoBuilder()
     .AddBackOffice()
     .AddWebsite()
     .AddComposers()
+    .ConfigureAuthenticationUsers()
     .Build();
 
 builder.Services.AddServerSideBlazor()

@@ -16,13 +16,11 @@ namespace MembersTestUmbraco16.Business.Options
     {
         public const string SchemeName = "ActiveDirectoryB2C";
         private readonly IUmbracoContextAccessor _umbracoContextAccessor;
-        private readonly Lazy<IUserService> _userService;
         private readonly Lazy<IUserGroupService> _userGroupService;
 
-        public EntraIDB2CBackOfficeExternalLoginProviderOptions(IUmbracoContextAccessor umbracoContextAccessor, Lazy<IUserService> userService, Lazy<IUserGroupService> userGroupService)
+        public EntraIDB2CBackOfficeExternalLoginProviderOptions(IUmbracoContextAccessor umbracoContextAccessor, Lazy<IUserGroupService> userGroupService)
         {
             _umbracoContextAccessor = umbracoContextAccessor;
-            _userService = userService;
             _userGroupService = userGroupService;
         }
 
