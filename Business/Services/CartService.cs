@@ -1,6 +1,5 @@
 ﻿using MembersTestUmbraco16.Business.Services.Interfaces;
 using MembersTestUmbraco16.Models;
-using MembersTestUmbraco16.Models.Search;
 
 namespace MembersTestUmbraco16.Business.Services
 {	
