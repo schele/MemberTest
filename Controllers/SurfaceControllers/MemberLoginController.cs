@@ -1,5 +1,4 @@
-﻿using MembersTestUmbraco16.Business.Extensions;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Umbraco.Cms.Core.Cache;
 using Umbraco.Cms.Core.Logging;
